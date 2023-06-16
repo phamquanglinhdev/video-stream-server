@@ -1,7 +1,34 @@
 const express = require("express");
 const app = express();
 const fs = require("fs");
+const multer = require('multer');
 
+
+// SET STORAGE
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'videos')
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + ".mp4")
+    }
+});
+
+const upload = multer({storage: storage});
+
+
+app.get("/", function (req, res) {
+    res.sendFile(__dirname + '/index.html');
+})
+app.post("/upload-video", upload.single('video'), (req, res, next) => {
+    const video = req.file
+    if (!video) {
+        const error = new Error('Please upload a file')
+        error.httpStatusCode = 400
+        return next(error)
+    }
+    res.send(video.filename)
+})
 
 app.get("/video/:id", function (req, res) {
     // Ensure there is a range given for the video
