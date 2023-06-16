@@ -20,6 +20,9 @@ const upload = multer({storage: storage});
 app.get("/", function (req, res) {
     res.sendFile(__dirname + '/index.html');
 })
+app.get("/demo", function (req, res) {
+    res.sendFile(__dirname + '/demo-stream-video.html');
+})
 app.post("/upload-video", upload.single('video'), (req, res, next) => {
     const video = req.file
     if (!video) {
